@@ -155,8 +155,8 @@ if __name__ == "__main__":
     generate(**gen_config,
              ckpt_iter=args.ckpt_iter,
              num_samples=args.num_samples,
-             use_model=train_config["use_model"],
-             data_path=trainset_config["data_path"],
-             masking=train_config["masking"],
-             missing_k=train_config["missing_k"])
+            #  use_model=train_config["use_model"],
+             data_path=trainset_config["data_path"])
+            #  masking=train_config["masking"],
+            #  missing_k=train_config["missing_k"])
 
