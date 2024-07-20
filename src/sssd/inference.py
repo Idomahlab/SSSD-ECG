@@ -1,8 +1,9 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="2"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"]="garbage_collection_threshold:0.8,max_split_size_mb:64"
 
 import argparse
+
 import json
 import numpy as np
 import torch

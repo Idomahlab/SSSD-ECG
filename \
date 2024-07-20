@@ -1,0 +1,5 @@
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+name = Ido Mahlab
+email = ido.mahlab@bm.technion.ac.il@orion.bm.technion.ac.il
