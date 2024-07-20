@@ -1,4 +1,5 @@
 src/sssd/config/data/
 src/sssd/config/labels/
 src/sssd/sssd_label_cond/
+dl/
 src/sssd/ptbxl_test_labels.npy
