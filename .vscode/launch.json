@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "pythonPath": "/home/anne2/miniconda3/envs/course241/bin/python"
+            "pythonPath": "~/SSSD-ECG/dl/bin/python"
         }
     ]
 }

@@ -531,8 +531,8 @@ def prepare_data_ptb_xl(data_path, min_cnt=10, target_fs=100, channels=12, chann
     target_root_ptb_xl.mkdir(parents=True, exist_ok=True)
 
     if(recreate_data is True):
-        # reading df
-        ptb_xl_csv = data_path/"ptbxl_database.csv"
+        # reading dfptb_xl_csv
+         = data_path/"ptbxl_database.csv"
         df_ptb_xl=pd.read_csv(ptb_xl_csv,index_col="ecg_id")
         #print(df_ptb_xl.columns)
         df_ptb_xl.scp_codes=df_ptb_xl.scp_codes.apply(lambda x: eval(x.replace("nan","np.nan")))
