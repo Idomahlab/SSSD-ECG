@@ -4,3 +4,5 @@ src/sssd/sssd_label_cond/
 dl/
 src/sssd/ptbxl_test_labels.npy
 *.pyc
+data/
+labels/
