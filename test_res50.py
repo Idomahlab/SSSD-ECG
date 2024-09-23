@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
-from resnetEcg import ResNet1d  # Make sure resnetEcg.py is in the same directory or in the Python path
+
 torch.cuda.manual_seed(10)
 from sklearn.metrics import classification_report
 from classifier_utils import train
@@ -13,90 +13,9 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from sklearn.preprocessing import StandardScaler
-class BottleneckBlock1D(nn.Module):
-    def __init__(self, in_channels, out_channels, stride=1, downsample=None):
-        super(BottleneckBlock1D, self).__init__()
-        mid_channels = out_channels // 4
-        self.conv1 = nn.Conv1d(in_channels, mid_channels, kernel_size=1, stride=stride, bias=False)
-        self.bn1 = nn.BatchNorm1d(mid_channels)
-        self.conv2 = nn.Conv1d(mid_channels, mid_channels, kernel_size=3, stride=1, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm1d(mid_channels)
-        self.conv3 = nn.Conv1d(mid_channels, out_channels, kernel_size=1, bias=False)
-        self.bn3 = nn.BatchNorm1d(out_channels)
-        self.relu = nn.ReLU(inplace=True)
-        self.downsample = downsample
+from train_res50 import ResNet1D, BottleneckBlock1D
 
-    def forward(self, x):
-        identity = x
 
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-        out = self.relu(out)
-
-        out = self.conv3(out)
-        out = self.bn3(out)
-
-        if self.downsample is not None:
-            identity = self.downsample(x)
-
-        out += identity
-        out = self.relu(out)
-
-        return out
-
-class ResNet1D(nn.Module):
-    def __init__(self, block, layers, num_classes=71):
-        super(ResNet1D, self).__init__()
-        self.in_channels = 64
-        self.conv1 = nn.Conv1d(12, 64, kernel_size=7, stride=2, padding=3, bias=False)
-        self.bn1 = nn.BatchNorm1d(64)
-        self.relu = nn.ReLU(inplace=True)
-        self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
-        
-        self.layer1 = self._make_layer(block, 256, layers[0])
-        self.layer2 = self._make_layer(block, 512, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 1024, layers[2], stride=2)
-        self.layer4 = self._make_layer(block, 2048, layers[3], stride=2)
-        
-        self.avgpool = nn.AdaptiveAvgPool1d(1)
-        self.fc = nn.Linear(2048, num_classes)
-    
-    def _make_layer(self, block, out_channels, blocks, stride=1):
-        downsample = None
-        if stride != 1 or self.in_channels != out_channels:
-            downsample = nn.Sequential(
-                nn.Conv1d(self.in_channels, out_channels, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm1d(out_channels),
-            )
-
-        layers = []
-        layers.append(block(self.in_channels, out_channels, stride, downsample))
-        self.in_channels = out_channels
-        for _ in range(1, blocks):
-            layers.append(block(self.in_channels, out_channels))
-
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
-
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
-
-        x = self.avgpool(x)
-        x = torch.flatten(x, 1)
-        x = self.fc(x)
-
-        return x
 def get_optimal_precision_recall(y_true, y_score):
     """Find precision and recall values that maximize F1 score."""
     n = np.shape(y_true)[1]
@@ -117,6 +36,8 @@ def get_optimal_precision_recall(y_true, y_score):
         opt_threshold.append(t)
     
     return np.array(opt_precision), np.array(opt_recall), np.array(opt_threshold)
+
+
 def report_performance(y_true, y_pred, output_file='classification_report.csv', plot_file='roc_curve.png'):
     """Print and save the classification report."""
     # Capture the classification report as a string

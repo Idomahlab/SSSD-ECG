@@ -108,56 +108,12 @@ def load_data(data_path, labels_path):
     labels = np.load(labels_path)
     return data, labels
 
-# 2. Standardize the data
-def standardize_data(x_train, x_val):
-    scaler = StandardScaler()
-    n_samples, n_channels, n_features = x_train.shape
-    
-    x_train_reshaped = x_train.reshape(n_samples * n_channels, n_features)
-    x_train_scaled = scaler.fit_transform(x_train_reshaped).reshape(n_samples, n_channels, n_features)
-    
-    x_val_reshaped = x_val.reshape(x_val.shape[0] * x_val.shape[1], x_val.shape[2])
-    x_val_scaled = scaler.transform(x_val_reshaped).reshape(x_val.shape[0], x_val.shape[1], x_val.shape[2])
-    
-    return x_train_scaled, x_val_scaled
 
-# 3. Create a PyTorch dataset and dataloader
+# 2. Create a PyTorch dataset and dataloader
 def create_dataloader(data, labels, batch_size=128, shuffle=True):
     dataset = TensorDataset(torch.FloatTensor(data), torch.FloatTensor(labels))
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
     return dataloader
-
-# 4. Define the training function
-def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device):
-    for epoch in range(num_epochs):
-        model.train()
-        train_loss = 0.0
-        for inputs, labels in train_loader:
-            inputs, labels = inputs.to(device), labels.to(device)
-            
-            optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
-            
-            train_loss += loss.item()
-        
-        # Validation
-        model.eval()
-        val_loss = 0.0
-        with torch.no_grad():
-            for inputs, labels in val_loader:
-                inputs, labels = inputs.to(device), labels.to(device)
-                outputs = model(inputs)
-                loss = criterion(outputs, labels)
-                val_loss += loss.item()
-        
-        print(f"Epoch {epoch+1}/{num_epochs}")
-        print(f"Train Loss: {train_loss/len(train_loader):.4f}")
-        print(f"Val Loss: {val_loss/len(val_loader):.4f}")
-        print()
-    torch.save(model.state_dict(), 'res_model_weights.pth')
 
 # Main script
 if __name__ == "__main__":
@@ -180,7 +136,6 @@ if __name__ == "__main__":
     # Define the cross-validation strategy
     kf = KFold(n_splits=5, shuffle=True, random_state=10)
     
-    start_epoch = 0
     best_loss = np.Inf
     history = pd.DataFrame(columns=['epoch', 'train_loss', 'valid_loss', 'lr'])
 
@@ -206,7 +161,7 @@ if __name__ == "__main__":
         scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=12, min_lr=1e-7, factor=0.1)
         
         tqdm.write("Training...")
-        for ep in range(start_epoch, 30):
+        for ep in range(30):
             train_loss = train(model, ep, train_loader, device, criterion, optimizer)
             valid_loss = evaluate(model, ep, val_loader, device, criterion)
             
