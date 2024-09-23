@@ -124,7 +124,7 @@ def report_performance(y_true, y_pred, output_file='classification_report.csv', 
     
     # Convert the classification report to a pandas DataFrame
     df = pd.DataFrame(report).transpose()
-    
+    output_file = 'classification_report/' + output_file
     # Save the DataFrame to a CSV file
     df.to_csv(output_file)
     print(f"Classification report saved to {output_file}")

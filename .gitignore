@@ -3,8 +3,8 @@ Diffusion_model/sssd/config/labels/
 Diffusion_model/sssd/sssd_label_cond/
 sssd_label_cond/
 dl/
-combined_labels.npy
-combined_samples.npy
+Res50_Data/
+
 Diffusion_model/sssd/ptbxl_test_labels.npy
 check_points/resnet_model/
 generated_labels/

@@ -168,8 +168,8 @@ if __name__ == "__main__":
     os.makedirs(foldername, exist_ok=True)
     
     # Load data
-    x, y = load_data('/home/ido.mahlab/SSSD-ECG/combined_samples.npy',
-                     "/home/ido.mahlab/SSSD-ECG/combined_labels.npy")
+    x, y = load_data('/home/ido.mahlab/SSSD-ECG/Res50_Data/combined_samples.npy',
+                     "/home/ido.mahlab/SSSD-ECG/Res50_Data/combined_labels.npy")
     
     # Standardize the data
     scaler = StandardScaler()
