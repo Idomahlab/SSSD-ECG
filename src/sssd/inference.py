@@ -74,22 +74,22 @@ def generate(output_directory,
         ckpt_iter = find_max_epoch(ckpt_path)
     model_path = os.path.join(ckpt_path, '{}.pkl'.format(ckpt_iter))
     try:
-        checkpoint = torch.load(model_path, map_location='cpu')
+        checkpoint = torch.load('/home/ido.mahlab/SSSD-ECG/src/sssd/sssd_label_cond/ch256_T200_betaT0.02/100000.pkl', map_location='cpu')
         net.load_state_dict(checkpoint['model_state_dict'])
         print('Successfully loaded model at iteration {}'.format(ckpt_iter))
     except:
         raise Exception('No valid model found')
 
    
-    labels = np.load('ptbxl_test_labels.npy')
-    l1 = labels[0:400]
-    l2 = labels[400:800]
-    l3 = labels[800:1200]
-    l4 = labels[1200:1600]
-    l5 = labels[1600:2000]
-    l6 = labels[2000:]
+    labels = np.load('/home/ido.mahlab/SSSD-ECG/generated_labels/label_16_array.npy')
+    ls = [labels[num_samples*i:num_samples*(i+1)] for i in range(len(labels) // num_samples)]
+    # l2 = labels[400:800]
+    # l3 = labels[800:1200]
+    # l4 = labels[1200:1600]
+    # l5 = labels[1600:2000]
+    # l6 = labels[2000:]
     
-    for i, label in enumerate((l1,l2,l3,l4,l5,l6)):
+    for i, label in enumerate(ls):
         
         cond = torch.from_numpy(label).cuda().float()
 
@@ -125,11 +125,11 @@ def generate(output_directory,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', type=str, default='config/config_SSSD_ECG.json',
+    parser.add_argument('-c', '--config', type=str, default='/home/ido.mahlab/SSSD-ECG/src/sssd/config/config_SSSD_ECG.json',
                         help='JSON file for configuration')
     parser.add_argument('-ckpt_iter', '--ckpt_iter', default=100000,
                         help='Which checkpoint to use; assign a number or "max"')
-    parser.add_argument('-n', '--num_samples', type=int, default=400,
+    parser.add_argument('-n', '--num_samples', type=int, default=100,
                         help='Number of utterances to be generated')
     args = parser.parse_args()
 

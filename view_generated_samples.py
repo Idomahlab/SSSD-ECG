@@ -1,60 +1,61 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
+import ecg_plot
 
 def save_ecg_image(numpy_array, output_file_name):
     """
-    Saves an ECG-like image showing the middle channels [0, i, :] from a NumPy array.
+    Saves an ECG-like image showing all 12 channels from a NumPy array.
     
     Parameters:
-    - numpy_array: NumPy array of shape [400, 12, 1000]
-    - output_file_name: Name of the file to save the ECG-like image (e.g., 'ecg_image.jpg')
+    - numpy_array: NumPy array of shape [12, length] representing the ECG data.
+    - output_file_name: Name of the file to save the ECG-like image (e.g., 'ecg_image.png')
     """
-    # Number of channels
-    num_channels = numpy_array.shape[1]
     
-    # Create a figure with subplots arranged in a grid (2 columns, 6 rows)
-    fig, axes = plt.subplots(nrows=6, ncols=2, figsize=(15, 10), sharex=True, sharey=True)
-    axes = axes.flatten()  # Flatten the 2D array of axes for easy iteration
+    # Ensure that numpy_array is of shape [12, length]
+    if numpy_array.shape[0] != 12:
+        raise ValueError("Input array must have 12 channels.")
 
-    # Define lead names
-    leads = ['I', 'II', 'III', 'aVR', 'aVL', 'aVF', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6']
+    # Plot and save the ECG data
+    ecg_plot.plot_12(numpy_array, sample_rate=100, title='ECG 12 Leads (Synthetic Diffusion generated sample)')
+    ecg_plot.save_as_png(output_file_name, '.')
 
-    # Plot each middle channel
-    for i in range(num_channels):
-        sample = numpy_array[0, i, :]
-        time = np.linspace(0, 10, sample.shape[0])
-        axes[i].plot(time, sample, color='black')
-        axes[i].set_title(leads[i], loc='right', fontsize=12)
-        axes[i].grid(True, which='both', color='red', linestyle='-', linewidth=0.5)
+def get_sample_indices_from_file(file_path, label_index):
+    """
+    Loads a numpy array from a .npy file and returns the indices of samples 
+    that are labeled with a '1' at the specified label index.
 
-        # Minor ticks every 0.04 (assuming 250 samples/sec)
-        axes[i].xaxis.set_minor_locator(MultipleLocator(0.04))
-        axes[i].yaxis.set_minor_locator(MultipleLocator(0.1))
+    Parameters:
+    file_path (str): The path to the .npy file containing the binary labels array.
+    label_index (int): The index of the label (0-70).
 
-        # Major ticks every 1 second and 0.5 mV
-        axes[i].xaxis.set_major_locator(MultipleLocator(1))
-        axes[i].yaxis.set_major_locator(MultipleLocator(0.5))
-
-        # Customizing the grid lines to look like ECG paper
-        axes[i].grid(which='major', color='red', linestyle='-', linewidth=0.75)
-        axes[i].grid(which='minor', color='red', linestyle='-', linewidth=0.25)
-
-        # Set the limits for y-axis
-        axes[i].set_ylim([-1, 1])
-
-    # Add labels to the entire figure
-    fig.text(0.5, 0.04, 'Time in seconds', ha='center', fontsize=14)
-    fig.text(0.04, 0.5, 'Amplitude (mV)', va='center', rotation='vertical', fontsize=14)
-
-    # Adjust layout
-    plt.tight_layout()
+    Returns:
+    np.ndarray: An array of indices of the samples that have a '1' at the specified label index.
+    """
+    # Load the numpy array from the file
+    labels_array = np.load(file_path)
     
-    # Save the plot to the specified file with JPEG format
-    plt.savefig(output_file_name, format='jpeg')
-    plt.close()
+    # Check if the label_index is within the valid range
+    if label_index < 0 or label_index >= labels_array.shape[1]:
+        raise ValueError(f"label_index must be between 0 and {labels_array.shape[1]-1}")
+
+    # Get the indices of samples where the specified label index is 1
+    indices = np.where(labels_array[:, label_index] == 1)[0]
+    
+    return indices
+
 # Example usage:
-# numpy_array = np.random.rand(400, 12, 1000)  # Example array
-numpy_array = np.load("src/sssd/sssd_label_cond/ch256_T200_betaT0.02/1_samples.npy")
-save_ecg_image(numpy_array, 'sample_plot.png')
+labels_file_path = "/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/0_labels.npy"
+ecg_data_file_path = "/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/0_samples.npy"
 
+# Get the indices of samples with the specified label
+sample_indices = get_sample_indices_from_file(labels_file_path, 4)
+
+# Choose one index from the returned indices (e.g., the first one)
+chosen_index = sample_indices[15]  # You can choose a different index if needed
+
+# Load the ECG data
+ECG_data = np.load(ecg_data_file_path)
+
+# Plot and save the ECG image for the chosen sample
+save_ecg_image(ECG_data[chosen_index], 'sample_plot.png')
