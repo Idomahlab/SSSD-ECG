@@ -14,6 +14,7 @@ Combine the training and validation sets using the combine_data.py script:
 bash
 Copy code
 python combine_data.py --input_dir path_to_ptbxl_data --output_dir path_to_combined_data
+
 3. Train the Basic Classifier
 
 Train the basic classifier using the train_res50.py script:
@@ -21,6 +22,7 @@ Train the basic classifier using the train_res50.py script:
 bash
 Copy code
 python train_res50.py --data_dir path_to_combined_data --output_dir path_to_model
+
 4. Evaluate the Classifier on the Test Set
 
 Run the trained classifier on the test set and get the performance report using the test_res50.py script:
@@ -28,6 +30,7 @@ Run the trained classifier on the test set and get the performance report using 
 bash
 Copy code
 python test_res50.py --model_dir path_to_model --test_data_dir path_to_test_data
+
 5. Choose a Label to Enhance
 
 Choose an arrhythmia index to enhance its performance.
@@ -39,6 +42,7 @@ Generate the desired label using the Generate_labels.py script. Specify the arrh
 bash
 Copy code
 python Generate_labels.py --label_index arrhythmia_index --num_samples number_of_samples --output_dir path_to_generated_labels
+
 7. Run the Diffusion Model
 
 Run the diffusion model by inserting the generated labels into the inference.py script to generate the corresponding samples:
@@ -60,6 +64,7 @@ Retrain the Classifier
 bash
 Copy code
 python train_res50.py --data_dir path_to_new_combined_data --output_dir path_to_retrained_model
+
 10. Evaluate the Retrained Classifier on the Test Set
 
 Run the retrained classifier on the test set and get the performance report. Compare the results to the baseline report to evaluate the impact of synthetic samples:
