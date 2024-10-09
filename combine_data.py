@@ -1,7 +1,7 @@
 import numpy as np
 
 samples_data_files_to_combine = [
-     "/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/0_samples.npy",
+     #"/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/0_samples.npy",
      #"/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/1_samples.npy",
      #'/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/2_samples.npy',
      #'/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/3_samples.npy',
@@ -15,7 +15,7 @@ samples_data_files_to_combine = [
 ]
 
 labels_data_files_to_combine = [
-     "/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/0_labels.npy",
+     #"/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/0_labels.npy",
      #"/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/1_labels.npy",
      #'/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/2_labels.npy',
      #'/home/ido.mahlab/SSSD-ECG/sssd_label_cond/ch256_T200_betaT0.02/3_labels.npy',

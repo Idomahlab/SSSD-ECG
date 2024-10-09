@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 import os
-from resnetEcg import ResNet1d 
+#from resnetEcg import ResNet1d 
 torch.cuda.manual_seed(10)
 from tqdm import tqdm
 import pandas as pd

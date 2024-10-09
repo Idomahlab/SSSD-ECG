@@ -1,33 +1,84 @@
-# Diffusion-based Conditional ECG Generation with Structured State Space Models
+# Deep Learning Project for Arrhythmia Classification  enhancment using Diffusing model
 
-This is the official repository for the paper [Diffusion-based Conditional ECG Generation with Structured State Space Models](https://doi.org/10.1016/j.compbiomed.2023.107115) <ins>accepted by Computers in Biology and Medicine</ins>. We propose diverse algorithms (primarly SSSD-ECG) for the generation of 12-lead ECG signals conditioned on disease labels.
+Overview
+This project involves training a deep learning classifier to identify arrhythmias from ECG data in the PTB-XL database. The project also includes generating synthetic samples using a diffusion model to enhance the performance of the classifier. The steps below guide you through downloading the dataset, combining data, training the classifier, generating synthetic samples, and evaluating the classifier's performance.
+Setup
+1. Download the PTB-XL Database
+
+Download the PTB-XL data from the following link: [PTB-XL Database](https://figshare.com/s/43df16e4a50e4dd0a0c5).
+
+2. Combine Train and Validation Sets
+
+Combine the training and validation sets using the combine_data.py script:
+
+bash
+Copy code
+python combine_data.py --input_dir path_to_ptbxl_data --output_dir path_to_combined_data
+3. Train the Basic Classifier
+
+Train the basic classifier using the train_res50.py script:
+
+bash
+Copy code
+python train_res50.py --data_dir path_to_combined_data --output_dir path_to_model
+4. Evaluate the Classifier on the Test Set
+
+Run the trained classifier on the test set and get the performance report using the test_res50.py script:
+
+bash
+Copy code
+python test_res50.py --model_dir path_to_model --test_data_dir path_to_test_data
+5. Choose a Label to Enhance
+
+Choose an arrhythmia index to enhance its performance.
+
+6. Generate Synthetic Samples
+
+Generate the desired label using the Generate_labels.py script. Specify the arrhythmia index and the number of samples to generate:
+
+bash
+Copy code
+python Generate_labels.py --label_index arrhythmia_index --num_samples number_of_samples --output_dir path_to_generated_labels
+7. Run the Diffusion Model
+
+Run the diffusion model by inserting the generated labels into the inference.py script to generate the corresponding samples:
+
+bash
+Copy code
+python inference.py --input_labels path_to_generated_labels --output_dir path_to_generated_samples
+Combine Train and Validation Sets Again
+
+8. Combine the train and validation sets again using the combine_data.py script (now including both synthetic and real samples):
+
+bash
+Copy code
+python combine_data.py --input_dir path_to_combined_and_synthetic_data --output_dir path_to_new_combined_data
+Retrain the Classifier
+
+9. Retrain the classifier using the train_res50.py script (with the new data containing both synthetic and real samples):
+
+bash
+Copy code
+python train_res50.py --data_dir path_to_new_combined_data --output_dir path_to_retrained_model
+10. Evaluate the Retrained Classifier on the Test Set
+
+Run the retrained classifier on the test set and get the performance report. Compare the results to the baseline report to evaluate the impact of synthetic samples:
+
+bash
+Copy code
+python test_res50.py --model_dir path_to_retrained_model --test_data_dir path_to_test_data
+Important Notes
+Test Set Integrity: It is crucial to keep the test set free from synthetic samples to evaluate the quality of the experiment accurately. This ensures the diffusion model's ability to enhance the classifier's performance in diagnosing real-life arrhythmias.
+Data Handling: Ensure that the paths to the data directories and model directories are correctly specified in each script.
+Contact
+For any issues or questions, please contact [ido.mahlab@campus.technion.ac.il].
 
 
-<a href="https://figshare.com/s/43df16e4a50e4dd0a0c5" alt="Dataset: https://figshare.com/s/43df16e4a50e4dd0a0c5">
-  <img src="https://img.shields.io/badge/Dataset-10.6084%2Fm9.figshare.21922947-red" /></a>
-<a href="https://figshare.com/s/81834b24a4711c2a5c55" alt="Model: https://figshare.com/s/81834b24a4711c2a5c55">
-  <img src="https://img.shields.io/badge/Model-10.6084%2Fm9.figshare.21922875-red" /></a>
-<a href="https://zenodo.org/account/settings/github/repository/AI4HealthUOL/SSSD-ECG" alt="Code: https://zenodo.org/account/settings/github/repository/AI4HealthUOL/SSSD-ECG"> <img src="https://img.shields.io/badge/Code-10.5281%2Fzenodo.7551714-blue" /></a> 
-
-[![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg)](https://arxiv.org/abs/2301.08227)
-
-![alt text](https://github.com/AI4HealthUOL/SSSD-ECG/blob/main/clinical%20evaluation/diagnosis%20on%20normal%20samples/plots/reports/SSSD.png?style=centerme)
-
-
-### Please cite our publication if you found our research to be helpful.
 
 ```bibtex
-@article{ALCARAZ2023107115,
-title = {Diffusion-based conditional ECG generation with structured state space models},
-journal = {Computers in Biology and Medicine},
-volume = {163},
-pages = {107115},
-year = {2023},
-issn = {0010-4825},
-doi = {https://doi.org/10.1016/j.compbiomed.2023.107115},
-url = {https://www.sciencedirect.com/science/article/pii/S0010482523005802},
-author = {Juan Miguel Lopez Alcaraz and Nils Strodthoff},
-keywords = {Cardiology, Electrocardiography, Signal processing, Synthetic data, Diffusion models, Time series},
+title = {Enhancing Multilabel Classification of Arrhythmias Using Diffusion-Based Data Augmentation on the PTB-XL Dataset},
+
+keywords = {Cardiology, Electrocardiography, Signal processing, Synthetic data, Diffusion models, Time series, resnet50, classifier},
 }
 
 ```
