@@ -82,3 +82,12 @@ keywords = {Cardiology, Electrocardiography, Signal processing, Synthetic data, 
 }
 
 ```
+Contact
+For any issues or questions, please contact [ido.mahlab@campus.technion.ac.il].
+
+Acknowledgments
+We would like to acknowledge the following repositories and articles which were instrumental in our research:
+
+SSSD-ECG Repository https://github.com/Idomahlab/SSSD-ECG
+Automatic ECG Diagnosis https://github.com/antonior92/automatic-ecg-diagnosis
+Generate Figures and Tables Script https://github.com/antonior92/automatic-ecg-diagnosis/blob/tensorflow-v1/generate_figures_and_tables.py
